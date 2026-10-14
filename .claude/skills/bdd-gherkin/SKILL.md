@@ -62,4 +62,4 @@ Feature: Mark a weekly test and award points
 ## Changing a scenario
 
 If an implementation reveals the scenario is wrong, do not edit it quietly. Change it in its own
-commit (`test: revise … because …`) and call it out in the PR description for SM.
+commit (`SCRUM-n test: revise … because …`) and call it out in the PR description for SM.

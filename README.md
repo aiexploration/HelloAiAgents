@@ -21,6 +21,11 @@ docker compose up --build
 open http://localhost:8080
 ```
 
+## Work tracking
+
+All work lives in Jira project **SCRUM**. Branches are `feature/SCRUM-n`; commits and PR titles start with the key
+(see [.claude/skills/git-workflow](.claude/skills/git-workflow/SKILL.md)). Run `git config core.hooksPath .githooks` once per clone.
+
 ## Feedback
 
-Open an issue with the **Feedback** template. The daily agent loop picks up issues labelled `feedback`.
+Create a Jira issue in SCRUM with the label `feedback`. The daily agent loop picks those up.

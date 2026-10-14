@@ -12,6 +12,7 @@ The human owner (SM) is an experienced Java/Spring engineer. He reviews and merg
 
 | What | Where |
 |---|---|
+| Work items | Jira project **SCRUM** — https://privaterelay-team-m6b8dopi.atlassian.net/jira/software/projects/SCRUM (use the Atlassian MCP tools) |
 | Requirements | [docs/product/requirements.md](docs/product/requirements.md) |
 | Behaviour (acceptance) | `features/**/*.feature` (Gherkin) — written before code |
 | UI | Figma file `dN7B8ZKjYGrKkLAbqBfOfz` (pages: Mobile screens, Desktop screens, Design system) |
@@ -69,15 +70,20 @@ compose.yaml        local runtime
 
 ## Definition of done (every PR)
 
-- [ ] Linked to a GitHub issue or a scenario in `features/`
+- [ ] Branch `feature/<JIRA-KEY>`, every commit and the PR title start with the key — see `.claude/skills/git-workflow`
 - [ ] New or changed scenarios pass; unit tests written first (red → green → refactor visible in commits)
 - [ ] `./mvnw verify` / `npm test` green in CI — paste the run link in the PR
 - [ ] UI matches the Figma frame named in the PR (screenshot attached)
 - [ ] No secrets, no real child data, no TODOs without an issue number
 - [ ] PR description: what, why, how to test, risks
 
-## Git
+## Git — mandatory, enforced by `.githooks/` and the `PR conventions` CI check
 
-- Branch: `<type>/<issue>-<slug>` e.g. `feat/12-weekly-test-scoring`
-- Conventional commits: `feat:`, `fix:`, `test:`, `refactor:`, `docs:`, `chore:`, `ci:`
+Follow `.claude/skills/git-workflow` before branching, committing or opening a PR.
+
+- Branch: **`feature/<JIRA-KEY>`**, nothing else — e.g. `feature/SCRUM-32`
+- Commit subject: **`<JIRA-KEY> <type>: <summary>`** — e.g. `SCRUM-32 feat: parent sign-in`
+- PR title: same format as commits; PR body starts with the Jira link
+- One Jira Story/Task per branch and PR. No key → ask SM; never invent one.
+- Once per clone: `git config core.hooksPath .githooks`
 - Rebase on `main` before opening the PR. Squash-merge is done by SM.

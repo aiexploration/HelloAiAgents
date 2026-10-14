@@ -1,7 +1,11 @@
+Jira: https://privaterelay-team-m6b8dopi.atlassian.net/browse/SCRUM-
+
+<!-- Title: SCRUM-n <type>: <summary> · Branch: feature/SCRUM-n -->
+
 ## What
 
 ## Why
-Closes #  · Requirements: R…
+Requirements: R…
 
 ## How to test
 ```
@@ -18,6 +22,7 @@ docker compose up --build
 ## New dependencies (name · licence · why)
 
 ## Checklist
+- [ ] Branch `feature/SCRUM-n`; every commit and the title start with `SCRUM-n`
 - [ ] Scenario(s) in `features/` written before code
 - [ ] Unit tests written first; red → green → refactor visible in commits
 - [ ] `spring-javaformat` / lint clean; CI green

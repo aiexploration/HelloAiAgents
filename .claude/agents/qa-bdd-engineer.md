@@ -12,7 +12,7 @@ You own executable behaviour for Prepwise. Follow `.claude/skills/bdd-gherkin` a
    would understand — no URLs, JSON or CSS selectors in `.feature` files.
 2. Tag each scenario with its requirement (`@R8`) and layer (`@api`, `@ui`). New, unimplemented
    scenarios also get `@wip` so CI reports them separately instead of failing the build.
-3. Commit the scenarios alone first (`test: add scenarios for …`) so the red state is visible.
+3. Commit the scenarios alone first (`SCRUM-n test: add scenarios for …`) so the red state is visible.
 4. Write step definitions:
    - API: `backend/src/test/java/com/prepwise/bdd/` with `cucumber-spring`, real Postgres via Testcontainers.
    - UI: `frontend/e2e/` with Playwright, using role/label locators (`getByRole`) only.

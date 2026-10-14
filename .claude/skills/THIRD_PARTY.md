@@ -13,5 +13,5 @@ These skills are copied from the highest-starred public skill repositories and a
 | frontend-design | [anthropics/skills](https://github.com/anthropics/skills) | `dbd4588` | Apache-2.0 — `frontend-design/LICENSE.txt` |
 | webapp-testing | anthropics/skills | `dbd4588` | Apache-2.0 — `webapp-testing/LICENSE.txt` |
 
-Project-specific skills written for Prepwise: `spring-boot-conventions` (rules taken from
+Project-specific skills written for Prepwise: `git-workflow`, `spring-boot-conventions` (rules taken from
 [spring-projects/spring-boot](https://github.com/spring-projects/spring-boot) `config/checkstyle`, commit `6cb91f9`) and `bdd-gherkin`.

@@ -17,13 +17,13 @@ Humans: **SM** approves the plan for anything risky, reviews and merges every PR
 ## One slice, end to end
 
 ```
-GitHub issue (SM or feedback)
+Jira story SCRUM-n (SM or feedback)
    │
    ▼
-tech-lead ── writes plan in the issue (files, scenarios, risks)
+tech-lead ── writes plan on the Jira issue; branch feature/SCRUM-n
    │
    ▼
-qa-bdd-engineer ── adds/updates .feature scenarios  ──► commit "test: …" (red)
+qa-bdd-engineer ── adds/updates .feature scenarios  ──► commit "SCRUM-n test: …" (red)
    │
    ▼
 backend / frontend engineers ── TDD: failing unit test → code → refactor, per behaviour
@@ -38,19 +38,24 @@ code-reviewer ── independent review; findings fixed before PR is marked read
 Pull request ── SM reviews in IntelliJ / GitHub, requests changes or merges
    │
    ▼
-CI on main ── publishes images to GHCR ──► SM: `make update` on the Mac
+CI on main ── publishes images to GHCR ──► runner on the Mac redeploys
 ```
 
 ## Daily loop (from Phase 5)
 
 A scheduled cloud session runs each weekday morning:
 
-1. Reads open issues labelled `feedback` and `ready`, highest priority first.
+1. Reads Jira issues in SCRUM labelled `feedback` or `ready` with status To Do, highest priority first.
 2. Picks **one** and runs the slice above, ending with a draft PR.
-3. Posts a summary on the issue: what changed, CI link, how to try it.
+3. Comments on the Jira issue: PR link, CI link, how to try it.
 
-SM's routine: review the PR → merge → `make update` → use the app → file feedback as issues
+SM's routine: review the PR → merge (CI deploys to the Mac) → use the app → file feedback as Jira issues
 (label `feedback`).
+
+## Traceability
+
+Branch `feature/SCRUM-n`, commits and PR titles starting with `SCRUM-n` let the GitHub for Jira app show
+the branch, commits, PR, CI runs and deployments on the Jira issue. Rules: `.claude/skills/git-workflow`.
 
 ## Phases
 
