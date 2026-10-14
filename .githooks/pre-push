@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Blocks pushes to main and pushes of branches not named feature/<JIRA-KEY>.
+set -euo pipefail
+while read -r local_ref _ remote_ref _; do
+  branch=${remote_ref#refs/heads/}
+  [ "$local_ref" = "(delete)" ] && continue
+  if [ "$branch" = "main" ]; then
+    echo "✖ Do not push to main. Open a PR from feature/<JIRA-KEY>." >&2; exit 1
+  fi
+  if ! printf '%s' "$branch" | grep -Eq '^feature/[A-Z][A-Z0-9]*-[0-9]+$'; then
+    echo "✖ Branch '$branch' must be named feature/<JIRA-KEY>, e.g. feature/SCRUM-32" >&2; exit 1
+  fi
+done

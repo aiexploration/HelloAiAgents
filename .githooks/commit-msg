@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Rejects commits whose subject does not start with the Jira key from the branch name.
+set -euo pipefail
+branch=$(git symbolic-ref --short -q HEAD || true)
+case "$branch" in
+  feature/*) ;;
+  *) exit 0 ;;   # main, detached HEAD, rebases: let pre-push / CI catch problems
+esac
+key=$(printf '%s' "$branch" | sed -n 's#^feature/\([A-Z][A-Z0-9]*-[0-9]*\)$#\1#p')
+if [ -z "$key" ]; then
+  echo "✖ Branch '$branch' must be named feature/<JIRA-KEY>, e.g. feature/SCRUM-32" >&2
+  exit 1
+fi
+subject=$(sed -n '/^[^#]/{p;q;}' "$1")
+types='feat|fix|test|refactor|docs|chore|ci|build|perf'
+if ! printf '%s' "$subject" | grep -Eq "^$key ($types)(\([a-z0-9-]+\))?!?: .+"; then
+  echo "✖ Commit subject must be: $key <type>: <summary>   (type: ${types//|/, })" >&2
+  echo "  got: $subject" >&2
+  exit 1
+fi

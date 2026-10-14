@@ -1,0 +1,53 @@
+name: PR conventions
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  jira-key:
+    name: Branch, title and commits carry the Jira key
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check naming
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+          BRANCH: ${{ github.event.pull_request.head.ref }}
+          TITLE: ${{ github.event.pull_request.title }}
+          BODY: ${{ github.event.pull_request.body }}
+        run: |
+          set -uo pipefail
+          types='feat|fix|test|refactor|docs|chore|ci|build|perf'
+          fail=0
+
+          key=$(printf '%s' "$BRANCH" | sed -n 's#^feature/\([A-Z][A-Z0-9]*-[0-9]*\)$#\1#p')
+          if [ -z "$key" ]; then
+            echo "::error::Branch '$BRANCH' must be named feature/<JIRA-KEY>, e.g. feature/SCRUM-32"
+            exit 1
+          fi
+          echo "Jira key: $key"
+
+          if ! printf '%s' "$TITLE" | grep -Eq "^$key ($types)(\([a-z0-9-]+\))?!?: .+"; then
+            echo "::error::PR title must be '$key <type>: <summary>' — got '$TITLE'"
+            fail=1
+          fi
+
+          if ! printf '%s' "$BODY" | head -n 3 | grep -q "atlassian.net/browse/$key"; then
+            echo "::error::PR body must start with 'Jira: https://<site>.atlassian.net/browse/$key'"
+            fail=1
+          fi
+
+          while IFS= read -r subject; do
+            if ! printf '%s' "$subject" | grep -Eq "^$key ($types)(\([a-z0-9-]+\))?!?: .+"; then
+              echo "::error::Commit '$subject' must start with '$key <type>: '"
+              fail=1
+            fi
+          done < <(gh api "repos/$REPO/pulls/$PR/commits" --paginate --jq '.[].commit.message | split("\n")[0]')
+
+          exit $fail
