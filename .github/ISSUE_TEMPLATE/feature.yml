@@ -1,0 +1,20 @@
+name: Feature
+description: A new behaviour for the agent team to build
+labels: [feature]
+body:
+  - type: textarea
+    id: story
+    attributes:
+      label: User story
+      placeholder: As a parent I want … so that …
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance (plain language or Gherkin)
+  - type: input
+    id: figma
+    attributes:
+      label: Figma frame
+      placeholder: 09 Parent dashboard
