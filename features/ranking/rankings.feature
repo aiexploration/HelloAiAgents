@@ -15,7 +15,7 @@ Feature: Weekly and all-time rankings within a group
     And week 11 runs from Monday 9 November 2026
     And Sam has created the group "Oakfield Friends" with Aarav and Maya
     And Priya has joined "Oakfield Friends" with Zara and Ivy
-    And Omar, Noah and Ella from other families are in "Oakfield Friends"
+    And Omar, Noah and Ella, each from a different family, are in "Oakfield Friends"
     And Leo has created the group "Riverside Readers" with Kai
     And the children in "Oakfield Friends" have these points:
       | child | all-time before week 11 | week 11 |
@@ -43,8 +43,25 @@ Feature: Weekly and all-time rankings within a group
       Given Omar has signed in on his family's device
       When Omar opens this week's "Oakfield Friends" ranking
       Then he sees "You're 4th this week with 270 points. Silver tier."
-      And below the top 3 he sees Omar in Silver, Maya in Bronze and Noah in Starter
+      And below the top 3 he sees these tiers, in this order:
+        | tier          | children |
+        | Silver        | Omar     |
+        | Bronze        | Maya     |
+        | Starter       | Noah     |
+        | Not taken yet | Ella     |
       And he does not see Maya's or Noah's points or positions
+
+    @api @ui @decision
+    Scenario: Below the top 3, tiers go from Gold to Starter, with nicknames in alphabetical order inside each tier
+      Given Noah's week 11 test earned him 199 points
+      And Omar has signed in on his family's device
+      When Omar opens this week's "Oakfield Friends" ranking
+      Then below the top 3 he sees these tiers, in this order:
+        | tier          | children   |
+        | Silver        | Omar       |
+        | Bronze        | Maya, Noah |
+        | Not taken yet | Ella       |
+      And Maya is listed before Noah, even though Noah is 5th and Maya is 6th
 
     @api @ui @decision
     Scenario Outline: Every child sees their own position and weekly tier
@@ -55,13 +72,12 @@ Feature: Weekly and all-time rankings within a group
       Examples:
         | child | session                                      | message                                             |
         | Aarav | Aarav has signed in on this device after Sam | You're 1st this week with 342 points. Gold tier.    |
-        | Maya  | Maya has signed in on this device after Sam  | You're 5th this week with 186 points. Bronze tier.  |
         | Noah  | Noah has signed in on his family's device    | You're 6th this week with 50 points. Starter tier.  |
         | Ella  | Ella has signed in on her family's device    | Take your week 11 test to join this week's ranking. |
 
     @api @decision
     Scenario Outline: Weekly tiers start at 100, 200 and 300 points
-      Given Noah has <points> points in week 11
+      Given Noah's week 11 test earned him <points> points
       And Noah has signed in on his family's device
       When Noah opens this week's "Oakfield Friends" ranking
       Then he sees "<tier> tier"
@@ -102,26 +118,27 @@ Feature: Weekly and all-time rankings within a group
     Scenario: The ranking shows children only by nickname
       Given Sam is signed in
       When Sam opens this week's "Oakfield Friends" ranking
-      Then each child is shown only by nickname
+      Then each entry shows only a nickname and either a place and points, or a tier
       And no surname, school, photo, year group, parent's name or email is shown
 
   Rule: Children with the same points share a place
 
     Background:
       Given it is Saturday 14 November 2026 at 10:00
-      And Maya has signed in on this device after Sam
+      And Ivy has signed in on her family's device
 
     @api @ui @decision
     Scenario Outline: Tied children share a place, in nickname order, and the next place is skipped
       Given <change>
-      When Maya opens this week's "Oakfield Friends" ranking
+      When Ivy opens this week's "Oakfield Friends" ranking
       Then she sees the top 3: <top 3>
-      And she sees "You're 5th this week with 186 points. Bronze tier."
+      And she sees "<own message>"
+      And Maya is 5th in this week's "Oakfield Friends" ranking
 
       Examples:
-        | change                                       | top 3                                                                                            |
-        | Ivy and Omar also have 310 points in week 11 | 1st Aarav with 342 points, then joint 2nd Ivy, Omar and Zara with 310 points                     |
-        | Omar also has 290 points in week 11          | 1st Aarav with 342 points, 2nd Zara with 310 points, then joint 3rd Ivy and Omar with 290 points |
+        | change                                       | top 3                                                                                            | own message                                              |
+        | Ivy and Omar also have 310 points in week 11 | 1st Aarav with 342 points, then joint 2nd Ivy, Omar and Zara with 310 points                     | You're joint 2nd this week with 310 points. Gold tier.   |
+        | Omar also has 290 points in week 11          | 1st Aarav with 342 points, 2nd Zara with 310 points, then joint 3rd Ivy and Omar with 290 points | You're joint 3rd this week with 290 points. Silver tier. |
 
   Rule: The weekly ranking starts again at Monday 00:00 UK time
 
@@ -137,38 +154,49 @@ Feature: Weekly and all-time rankings within a group
         | Sunday 15 November 2026 at 23:59 | 11   |
         | Monday 16 November 2026 at 00:00 | 12   |
 
-      Examples: During British Summer Time, midnight UK time is 23:00 the evening before in UTC
+      Examples: During British Summer Time
         | when                            | week |
         | Sunday 18 October 2026 at 23:59 | 7    |
         | Monday 19 October 2026 at 00:00 | 8    |
 
-    @api @ui
-    Scenario: A new week's ranking starts with nobody on points
-      Given it is Monday 16 November 2026 at 08:00
+      Examples: Across the clock change on Sunday 25 October 2026
+        | when                            | week |
+        | Sunday 25 October 2026 at 23:59 | 8    |
+        | Monday 26 October 2026 at 00:00 | 9    |
+
+    @api @ui @decision
+    Scenario Outline: A new week's ranking starts with nobody on points
+      Given it is <when>
       And Aarav has signed in on this device after Sam
       When Aarav opens this week's "Oakfield Friends" ranking
       Then he sees every child in "Oakfield Friends" under "Not taken yet"
-      And he sees "Take your week 12 test to join this week's ranking."
+      And he sees "<message>"
+
+      Examples:
+        | when                             | message                                             |
+        | Monday 16 November 2026 at 00:00 | Your next test opens today at 7am                   |
+        | Monday 16 November 2026 at 06:59 | Your next test opens today at 7am                   |
+        | Monday 16 November 2026 at 08:00 | Take your week 12 test to join this week's ranking. |
 
     @api @decision
     Scenario: Points from a test sent at the Sunday-midnight close stay in the week that closed
-      Given Maya's week 11 test was sent when the test closed on Monday 16 November 2026 at 00:00, with 30 of 30 answered
-      And it earned her 186 points
+      Given Omar's week 11 test was sent when the test closed on Monday 16 November 2026 at 00:00, with 30 of 30 answered
+      And it earned him 270 points
       And it is Monday 16 November 2026 at 08:00
-      And Maya has signed in on this device after Sam
-      When Maya opens last week's "Oakfield Friends" ranking
-      Then she sees "You were 5th in week 11 with 186 points. Bronze tier."
-      And Maya has no points in this week's "Oakfield Friends" ranking
+      And Omar has signed in on his family's device
+      When Omar opens last week's "Oakfield Friends" ranking
+      Then he sees "You were 4th in week 11 with 270 points. Silver tier."
+      And Omar has no points in this week's "Oakfield Friends" ranking
 
   Rule: The all-time ranking adds up every week and never resets
 
     @api @ui
     Scenario: The all-time top 3 includes this week's points
       Given it is Saturday 14 November 2026 at 10:00
-      And Maya has signed in on this device after Sam
-      When Maya opens the all-time "Oakfield Friends" ranking
+      And Ivy has signed in on her family's device
+      When Ivy opens the all-time "Oakfield Friends" ranking
       Then she sees the top 3: 1st Zara with 1,710 points, 2nd Aarav with 1,592 points and 3rd Omar with 1,370 points
-      And she sees "You're 5th all-time with 786 points. Bronze tier."
+      And she sees "You're 4th all-time with 1,190 points. Silver tier."
 
     @api @ui @decision
     Scenario Outline: A week without a test keeps a child's all-time points, and the reset does not touch them
@@ -181,13 +209,30 @@ Feature: Weekly and all-time rankings within a group
         | when                               | child | session                                   | message                                             |
         | Saturday 14 November 2026 at 10:00 | Ella  | Ella has signed in on her family's device | You're 6th all-time with 700 points. Bronze tier.   |
         | Saturday 14 November 2026 at 10:00 | Noah  | Noah has signed in on his family's device | You're 7th all-time with 350 points. Starter tier.  |
-        | Monday 16 November 2026 at 00:00   | Ivy   | Ivy has signed in on her family's device  | You're 4th all-time with 1,190 points. Silver tier. |
+        | Monday 16 November 2026 at 00:00   | Zara  | Zara has signed in on her family's device | You're 1st all-time with 1,710 points. Silver tier. |
+
+    @api @decision
+    Scenario Outline: All-time tiers start at 500, 1,000 and 2,500 points
+      Given it is Saturday 14 November 2026 at 10:00
+      And Noah's all-time points are <points>
+      And Noah has signed in on his family's device
+      When Noah opens the all-time "Oakfield Friends" ranking
+      Then he sees "<tier> tier"
+
+      Examples:
+        | points | tier    |
+        | 499    | Starter |
+        | 500    | Bronze  |
+        | 999    | Bronze  |
+        | 1,000  | Silver  |
+        | 2,499  | Silver  |
+        | 2,500  | Gold    |
 
   Rule: A ranking only ever compares children in the same group
 
     Background:
       Given it is Saturday 14 November 2026 at 10:00
-      And Kai has 400 points in week 11
+      And Kai's week 11 test earned him 400 points
       And Zara is in both "Oakfield Friends" and "Riverside Readers"
 
     @api @ui
@@ -231,7 +276,6 @@ Feature: Weekly and all-time rankings within a group
 
       Examples:
         | who | session                                  | ranking      |
-        | Leo | Leo is signed in                         | this week's  |
         | Leo | Leo is signed in                         | the all-time |
         | Kai | Kai has signed in on his family's device | this week's  |
         | Kai | Kai has signed in on his family's device | the all-time |
