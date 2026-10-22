@@ -1,0 +1,41 @@
+#!/bin/sh
+# Minimal "only-script" Maven wrapper. Downloads the distribution named in
+# .mvn/wrapper/maven-wrapper.properties on first use, then runs it.
+# Set MVNW_VERBOSE=true to trace. Honours MAVEN_USER_HOME (default ~/.m2).
+set -eu
+[ "${MVNW_VERBOSE:-}" = true ] && set -x
+
+base_dir=$(cd "$(dirname "$0")" && pwd)
+props="$base_dir/.mvn/wrapper/maven-wrapper.properties"
+url=$(sed -n 's/^distributionUrl[[:space:]]*=[[:space:]]*//p' "$props" | tr -d '\r')
+if [ -z "$url" ]; then
+	echo "mvnw: distributionUrl not found in $props" >&2
+	exit 1
+fi
+
+zip_name=${url##*/}
+dist_name=${zip_name%-bin.zip}
+url_hash=$(printf '%s' "$url" | cksum | cut -d ' ' -f 1)
+dists_dir="${MAVEN_USER_HOME:-$HOME/.m2}/wrapper/dists/$dist_name"
+maven_home="$dists_dir/$url_hash"
+
+if [ ! -x "$maven_home/bin/mvn" ]; then
+	mkdir -p "$dists_dir"
+	tmp_dir=$(mktemp -d "$dists_dir/tmp.XXXXXX")
+	echo "mvnw: downloading $url" >&2
+	if command -v curl >/dev/null 2>&1; then
+		curl -fsSL -o "$tmp_dir/$zip_name" "$url"
+	elif command -v wget >/dev/null 2>&1; then
+		wget -q -O "$tmp_dir/$zip_name" "$url"
+	else
+		echo "mvnw: curl or wget is required to download Maven" >&2
+		rm -rf "$tmp_dir"
+		exit 1
+	fi
+	unzip -q "$tmp_dir/$zip_name" -d "$tmp_dir"
+	rm -rf "$maven_home"
+	mv "$tmp_dir/$dist_name" "$maven_home"
+	rm -rf "$tmp_dir"
+fi
+
+exec "$maven_home/bin/mvn" "$@"
