@@ -1,0 +1,1 @@
+-- Baseline: an empty schema. Feature tables arrive in later migrations (V2 onwards).
