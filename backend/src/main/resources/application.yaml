@@ -2,10 +2,10 @@ spring:
   application:
     name: prepwise
   datasource:
-    # Local defaults only; real values come from the environment.
+    # Local defaults for url/username; the password must come from the environment.
     url: ${PREPWISE_DB_URL:jdbc:postgresql://localhost:5432/prepwise}
     username: ${PREPWISE_DB_USERNAME:prepwise}
-    password: ${PREPWISE_DB_PASSWORD:prepwise}
+    password: ${PREPWISE_DB_PASSWORD}
   jpa:
     open-in-view: false
     hibernate:
