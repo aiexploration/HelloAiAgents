@@ -2,6 +2,9 @@ package com.prepwise;
 
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.MigrationInfo;
+import org.flywaydb.core.api.MigrationInfoService;
+import org.flywaydb.core.api.MigrationState;
+import org.flywaydb.core.api.MigrationVersion;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -44,10 +47,11 @@ class PrepwiseApplicationTests {
 	}
 
 	@Test
-	void flywayAppliesBaselineMigration() {
-		MigrationInfo current = this.flyway.info().current();
-		assertThat(current).isNotNull();
-		assertThat(current.getVersion().getVersion()).isEqualTo("1");
+	void flywayAppliesAllMigrationsIncludingBaseline() {
+		MigrationInfoService info = this.flyway.info();
+		assertThat(info.pending()).isEmpty();
+		assertThat(info.applied()).extracting(MigrationInfo::getVersion).contains(MigrationVersion.fromVersion("1"));
+		assertThat(info.applied()).extracting(MigrationInfo::getState).containsOnly(MigrationState.SUCCESS);
 	}
 
 }
