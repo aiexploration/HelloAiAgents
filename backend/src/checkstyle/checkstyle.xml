@@ -17,7 +17,7 @@
 			<property name="illegalPkgs"
 				value="^sun.*, ^org\.apache\.commons\.(?!logging).*, ^com\.google\.common.*, ^org\.jetbrains\.annotations.*, ^org\.testcontainers\.shaded.*"/>
 			<property name="illegalClasses"
-				value="^org\.junit\.rules\.ExpectedException, ^org\.mockito\.InjectMocks, ^org\.slf4j\.LoggerFactory, ^javax\.annotation\.PostConstruct, ^jakarta\.annotation\.PostConstruct"/>
+				value="^org\.junit\.rules\.ExpectedException, ^org\.mockito\.InjectMocks, ^org\.slf4j\.LoggerFactory, ^javax\.annotation\.PostConstruct, ^jakarta\.annotation\.PostConstruct, ^org\.springframework\.lang\.(Nullable|NonNull|NonNullApi|NonNullFields|Contract)"/>
 		</module>
 		<module name="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck">
 			<property name="maximum" value="0"/>
@@ -37,6 +37,18 @@
 			<property name="format"
 				value="org\.mockito\.(Mockito|BDDMockito)\.(when|doThrow|doAnswer|doReturn|verify|verifyNoInteractions|verifyNoMoreInteractions)"/>
 			<property name="message" value="Please use BDD-style (given, when, then) using BDDMockito imports."/>
+			<property name="ignoreComments" value="true"/>
+		</module>
+		<module name="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck">
+			<property name="maximum" value="0"/>
+			<property name="format" value="^import static org\.mockito\.Mockito\.\*;"/>
+			<property name="message" value="Please use BDD-style (given, when, then) using BDDMockito imports."/>
+			<property name="ignoreComments" value="true"/>
+		</module>
+		<module name="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck">
+			<property name="maximum" value="0"/>
+			<property name="format" value="^import (static )?org\.junit\.(jupiter\.api\.Assertions|Assert)\b"/>
+			<property name="message" value="Please use AssertJ."/>
 			<property name="ignoreComments" value="true"/>
 		</module>
 		<module name="com.puppycrawl.tools.checkstyle.checks.regexp.RegexpSinglelineJavaCheck">

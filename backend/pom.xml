@@ -77,8 +77,8 @@
 				<version>${spring-javaformat.version}</version>
 				<executions>
 					<execution>
+						<id>javaformat-validation</id>
 						<phase>validate</phase>
-						<inherited>true</inherited>
 						<goals>
 							<goal>validate</goal>
 						</goals>
@@ -105,7 +105,6 @@
 					<execution>
 						<id>checkstyle-validation</id>
 						<phase>validate</phase>
-						<inherited>true</inherited>
 						<configuration>
 							<configLocation>src/checkstyle/checkstyle.xml</configLocation>
 							<includeTestSourceDirectory>true</includeTestSourceDirectory>

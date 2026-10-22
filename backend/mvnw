@@ -1,41 +1,59 @@
 #!/bin/sh
-# Minimal "only-script" Maven wrapper. Downloads the distribution named in
-# .mvn/wrapper/maven-wrapper.properties on first use, then runs it.
+# Minimal Maven wrapper (hand-written, not the official Apache wrapper).
+# Downloads the distribution named in .mvn/wrapper/maven-wrapper.properties on
+# first use, verifies it when distributionSha256Sum is set, then runs it.
 # Set MVNW_VERBOSE=true to trace. Honours MAVEN_USER_HOME (default ~/.m2).
 set -eu
 [ "${MVNW_VERBOSE:-}" = true ] && set -x
 
 base_dir=$(cd "$(dirname "$0")" && pwd)
 props="$base_dir/.mvn/wrapper/maven-wrapper.properties"
-url=$(sed -n 's/^distributionUrl[[:space:]]*=[[:space:]]*//p' "$props" | tr -d '\r')
+prop() {
+	sed -n "s/^$1[[:space:]]*=[[:space:]]*//p" "$props" | tr -d '\r'
+}
+url=$(prop distributionUrl)
+sha256=$(prop distributionSha256Sum)
 if [ -z "$url" ]; then
 	echo "mvnw: distributionUrl not found in $props" >&2
 	exit 1
 fi
 
-zip_name=${url##*/}
-dist_name=${zip_name%-bin.zip}
+archive=${url##*/}
+dist_name=${archive%-bin.tar.gz}
 url_hash=$(printf '%s' "$url" | cksum | cut -d ' ' -f 1)
-dists_dir="${MAVEN_USER_HOME:-$HOME/.m2}/wrapper/dists/$dist_name"
+dists_dir="${MAVEN_USER_HOME:-${HOME:?HOME or MAVEN_USER_HOME must be set}/.m2}/wrapper/dists/$dist_name"
 maven_home="$dists_dir/$url_hash"
 
 if [ ! -x "$maven_home/bin/mvn" ]; then
 	mkdir -p "$dists_dir"
 	tmp_dir=$(mktemp -d "$dists_dir/tmp.XXXXXX")
+	trap 'rm -rf "$tmp_dir"' EXIT INT TERM
 	echo "mvnw: downloading $url" >&2
 	if command -v curl >/dev/null 2>&1; then
-		curl -fsSL -o "$tmp_dir/$zip_name" "$url"
+		curl -fsSL -o "$tmp_dir/$archive" "$url"
 	elif command -v wget >/dev/null 2>&1; then
-		wget -q -O "$tmp_dir/$zip_name" "$url"
+		wget -q -O "$tmp_dir/$archive" "$url"
 	else
 		echo "mvnw: curl or wget is required to download Maven" >&2
-		rm -rf "$tmp_dir"
 		exit 1
 	fi
-	unzip -q "$tmp_dir/$zip_name" -d "$tmp_dir"
-	rm -rf "$maven_home"
-	mv "$tmp_dir/$dist_name" "$maven_home"
-	rm -rf "$tmp_dir"
+	if [ -n "$sha256" ]; then
+		if command -v sha256sum >/dev/null 2>&1; then
+			actual=$(sha256sum "$tmp_dir/$archive" | cut -d ' ' -f 1)
+		else
+			actual=$(shasum -a 256 "$tmp_dir/$archive" | cut -d ' ' -f 1)
+		fi
+		if [ "$actual" != "$sha256" ]; then
+			echo "mvnw: SHA-256 mismatch for $archive (expected $sha256, got $actual)" >&2
+			exit 1
+		fi
+	fi
+	tar -xzf "$tmp_dir/$archive" -C "$tmp_dir"
+	# Another run may have installed it meanwhile; never replace a live install.
+	if [ ! -x "$maven_home/bin/mvn" ]; then
+		rm -rf "$maven_home"
+		mv "$tmp_dir/$dist_name" "$maven_home"
+	fi
 fi
 
 exec "$maven_home/bin/mvn" "$@"
