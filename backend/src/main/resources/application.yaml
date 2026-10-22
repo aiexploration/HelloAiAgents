@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: prepwise
+  datasource:
+    # Local defaults only; real values come from the environment.
+    url: ${PREPWISE_DB_URL:jdbc:postgresql://localhost:5432/prepwise}
+    username: ${PREPWISE_DB_USERNAME:prepwise}
+    password: ${PREPWISE_DB_PASSWORD:prepwise}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
