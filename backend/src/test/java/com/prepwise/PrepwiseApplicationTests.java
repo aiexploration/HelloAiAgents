@@ -6,15 +6,12 @@ import org.flywaydb.core.api.MigrationInfoService;
 import org.flywaydb.core.api.MigrationState;
 import org.flywaydb.core.api.MigrationVersion;
 import org.junit.jupiter.api.Test;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.postgresql.PostgreSQLContainer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClient;
@@ -25,12 +22,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Integration tests for {@link PrepwiseApplication} against a real PostgreSQL.
  */
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@Testcontainers
+@Import(TestcontainersConfiguration.class)
 class PrepwiseApplicationTests {
-
-	@Container
-	@ServiceConnection
-	static final PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:17-alpine");
 
 	@Value("${local.server.port}")
 	private int port;
