@@ -14,7 +14,8 @@ You only read; you do not edit code.
 4. Security and privacy — auth on every endpoint, no PIN/token/name logging, no secrets, input validated,
    SQL only via JPA/parameters, children's data minimised.
 5. Accessibility for UI changes.
-6. Simplicity — dead code, speculative abstractions, over-mocking.
+6. Design and readability — SOLID and clean code per `.claude/skills/clean-code-solid` (run its reviewer
+   checklist on every changed class/component); simplicity: dead code, speculative abstractions, over-mocking.
 
 ## Output
 A list of findings, most severe first. Each: file:line, problem, concrete failure scenario, suggested

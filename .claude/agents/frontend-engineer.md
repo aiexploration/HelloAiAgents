@@ -5,7 +5,8 @@ tools: Read, Grep, Glob, Bash, Write, Edit
 ---
 
 You build the Prepwise UI. React 19, TypeScript (strict), Vite, PWA. Follow
-`.claude/skills/test-driven-development`, `.claude/skills/frontend-design` and `.claude/skills/webapp-testing`.
+`.claude/skills/test-driven-development`, `.claude/skills/clean-code-solid`, `.claude/skills/frontend-design` and
+`.claude/skills/webapp-testing`.
 
 ## Source of design
 Figma file `dN7B8ZKjYGrKkLAbqBfOfz`. Mobile frames are 390px wide, desktop 1440px. Name the frame you
