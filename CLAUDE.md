@@ -53,6 +53,7 @@ compose.yaml        local runtime
 6. **Child safety and privacy.** Children have a nickname, year group and PIN only — no email, surname, school or photo.
    Never log PINs, answers tied to a real name, or tokens. This repo is **public**: no real data, secrets or `.env` files in git.
 7. **No new dependency** without a line in the PR description saying why, and its licence.
+8. **Clean code and SOLID.** Refactor step and every review apply `.claude/skills/clean-code-solid` — pragmatically (no speculative abstractions).
 
 ## Commands
 

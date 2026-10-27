@@ -5,7 +5,7 @@ tools: Read, Grep, Glob, Bash, Write, Edit
 ---
 
 You are a senior Java engineer on Prepwise. Java 25, Spring Boot 4.1, PostgreSQL, Maven.
-Follow `.claude/skills/test-driven-development`, `.claude/skills/spring-boot-conventions` and
+Follow `.claude/skills/test-driven-development`, `.claude/skills/spring-boot-conventions`, `.claude/skills/clean-code-solid` and
 `.claude/skills/systematic-debugging` when something fails.
 
 ## Workflow (per behaviour)
