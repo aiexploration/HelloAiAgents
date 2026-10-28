@@ -20,4 +20,10 @@ describe('App shell', () => {
 
     expect(screen.getByText('Weekly Maths and English practice for the 11+.')).toBeInTheDocument();
   });
+
+  it('has no navigation landmark until there are destinations', () => {
+    render(<App />);
+
+    expect(screen.queryByRole('navigation')).toBeNull();
+  });
 });
