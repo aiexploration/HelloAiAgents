@@ -25,7 +25,11 @@ describe('web app manifest', () => {
     expect(manifest.background_color).toBe(readToken(tokensCss, '--color-background'));
   });
 
-  it('provides at least one icon', () => {
-    expect(manifest.icons?.length).toBeGreaterThan(0);
+  it('provides an icon for normal display', () => {
+    expect(manifest.icons).toContainEqual(expect.objectContaining({ purpose: 'any' }));
+  });
+
+  it('provides a separate maskable icon', () => {
+    expect(manifest.icons).toContainEqual(expect.objectContaining({ purpose: 'maskable' }));
   });
 });
