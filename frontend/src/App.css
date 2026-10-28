@@ -1,7 +1,3 @@
-.app {
-  min-height: 100dvh;
-}
-
 .app__sidebar {
   display: none;
 }
@@ -26,6 +22,8 @@
 
 @media (min-width: 1024px) {
   .app {
+    /* Full height so the sidebar background reaches the bottom of the viewport. */
+    min-height: 100dvh;
     display: grid;
     grid-template-columns: var(--sidebar-width) 1fr;
   }
