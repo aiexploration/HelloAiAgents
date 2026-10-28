@@ -1,0 +1,70 @@
+/*
+ * Prepwise design tokens, from the Figma "Design system" page (file dN7B8ZKjYGrKkLAbqBfOfz).
+ * The only place literal colour values may appear; components use var(--…) only.
+ *
+ * Breakpoint: one, at min-width 1024px (desktop sidebar layout). Custom properties cannot be
+ * used inside media queries, so write `@media (min-width: 1024px)` literally.
+ */
+:root {
+  /* Colour */
+  --color-primary: #5B4BDB;
+  --color-primary-soft: #EEEBFF;
+  --color-maths: #0E9F8E;
+  --color-maths-soft: #DFF5F1;
+  --color-maths-text: #0A6B60;
+  --color-english: #E5643D;
+  --color-english-soft: #FDECE6;
+  --color-english-text: #B44C1D;
+  --color-gold: #F2B705;
+  --color-gold-soft: #FFF5D1;
+  --color-warning-text: #946500;
+  --color-success: #2E9E5B;
+  --color-danger: #D64545;
+  --color-review-correct: #10B981;
+  --color-review-incorrect: #EF4444;
+  --color-ink: #1C1B2E;
+  --color-ink-2: #56556B;
+  --color-muted: #4E4C62;
+  --color-line: #E7E5F0;
+  --color-background: #F6F5FB;
+  --color-surface: #FFFFFF;
+  --color-on-primary: #FFFFFF;
+
+  /* Type (Inter) */
+  --font-family: 'Inter', system-ui, sans-serif;
+  --font-size-display: 32px;
+  --font-size-h1: 26px;
+  --font-size-h2: 20px;
+  --font-size-h3: 16px;
+  --font-size-body: 15px;
+  --font-size-small: 13px;
+  --font-size-caption: 12px;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --line-height-tight: 1.2;
+  --line-height-body: 1.5;
+
+  /* Spacing (8px grid) */
+  --space-half: 4px;
+  --space-1: 8px;
+  --space-1-5: 12px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-6: 48px;
+  --space-8: 64px;
+
+  /* Radii */
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+
+  /* Sizes */
+  --touch-target-min: 44px;
+  --answer-tile-min: 64px;
+  --border-default: 1.5px;
+  --border-strong: 2px;
+  --sidebar-width: 256px;
+}
