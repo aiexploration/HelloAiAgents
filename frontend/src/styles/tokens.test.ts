@@ -7,7 +7,10 @@ import { readToken } from '../test/read-token';
 const srcDir = new URL('../', import.meta.url);
 const tokensCss = readFileSync(new URL('./tokens.css', import.meta.url), 'utf8');
 
-const HEX_COLOUR = /#[0-9a-f]{3}(?:[0-9a-f]{3})?\b/i;
+const COLOUR_LITERAL = /#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})\b|\b(?:rgba?|hsla?)\(/i;
+
+// tokens.css defines the colours; the web app manifest is JSON and cannot reference CSS variables.
+const MAY_CONTAIN_COLOURS = ['styles/tokens.css', 'pwa/manifest.ts'];
 
 // Values documented on the Figma "Design system" page (file dN7B8ZKjYGrKkLAbqBfOfz).
 const figmaColours: [string, string][] = [
@@ -67,7 +70,8 @@ const figmaScale: [string, string][] = [
 
 function componentSources(): string[] {
   return readdirSync(srcDir, { recursive: true, encoding: 'utf8' })
-    .filter((file) => /\.(css|tsx)$/.test(file) && !file.endsWith('tokens.css'))
+    .filter((file) => /\.(css|tsx?)$/.test(file) && !/\.test\.tsx?$/.test(file))
+    .filter((file) => !MAY_CONTAIN_COLOURS.includes(file.replaceAll('\\', '/')))
     .map((file) => fileURLToPath(new URL(file, srcDir)));
 }
 
@@ -80,8 +84,8 @@ describe('design tokens', () => {
     expect(readToken(tokensCss, name)).toBe(value);
   });
 
-  it('keeps literal hex colours out of components and stylesheets', () => {
-    const offenders = componentSources().filter((file) => HEX_COLOUR.test(readFileSync(file, 'utf8')));
+  it('keeps colour literals out of components, stylesheets and modules', () => {
+    const offenders = componentSources().filter((file) => COLOUR_LITERAL.test(readFileSync(file, 'utf8')));
 
     expect(offenders).toEqual([]);
   });
